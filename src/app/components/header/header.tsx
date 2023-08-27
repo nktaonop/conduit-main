@@ -1,13 +1,16 @@
 "use client";
+
 import Link from "next/link";
-import { useState } from "react";
+import { useSelectedLayoutSegment } from "next/navigation";
 
 export default function Header() {
-  const [activeLink, setActiveLink] = useState(null);
+  const activeSegment = useSelectedLayoutSegment();
 
-  const handleButtonClick = (linkIndex: any) => {
-    setActiveLink(linkIndex);
-  };
+  const links = [
+    { label: "Home", path: "/", targetSegment: null },
+    { label: "Sign in", path: "/signin", targetSegment: "signin" },
+    { label: "Sign up", path: "/signup", targetSegment: "signup" },
+  ];
 
   return (
     <div className="w-[100%] py-[0.5rem]">
@@ -16,36 +19,18 @@ export default function Header() {
           conduit
         </Link>
         <div>
-          <Link
-            href="/"
-            className={`link ${
-              activeLink === 0 ? "text-clicked" : "text-unClicked"
-            }`}
-            onClick={() => {
-              handleButtonClick(0);
-            }}>
-            Home
-          </Link>
-          <Link
-            href="/signin"
-            className={`ml-4 link ${
-              activeLink === 1 ? "text-clicked" : "text-unClicked"
-            }`}
-            onClick={() => {
-              handleButtonClick(1);
-            }}>
-            Sign in
-          </Link>
-          <Link
-            href="/signup"
-            className={`ml-4 link ${
-              activeLink === 2 ? "text-clicked" : "text-unClicked"
-            }`}
-            onClick={() => {
-              handleButtonClick(2);
-            }}>
-            Sign up
-          </Link>
+          {links.map((l, i) => (
+            <Link
+              className={`mr-4 link ${
+                activeSegment == l.targetSegment
+                  ? "text-clicked"
+                  : "text-unClicked"
+              }`}
+              key={i}
+              href={l.path}>
+              {l.label}
+            </Link>
+          ))}
         </div>
       </div>
     </div>
