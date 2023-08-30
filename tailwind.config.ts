@@ -14,6 +14,7 @@ const config: Config = {
         white: "#fff",
         unClicked: "rgba(0, 0, 0, 0.3)",
         clicked: "black",
+        error: "#B85C5C",
       },
       backgroundImage: {
         "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
