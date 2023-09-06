@@ -1,33 +1,24 @@
 "use client";
 
-import axios from "axios";
 import { useForm } from "react-hook-form";
+import {httpClient} from "@/app/providers/http.provider";
+import {parseErrorList} from "@/app/helpers/error-list.helpers";
+import {setItem} from "@/app/helpers/storage.helpers";
+import {AUTH_TOKEN_KEY} from "@/app/constants/common.constants";
+import {emailValidator, simpleControlValidator} from "@/app/constants/validator.constants";
 
 export default function SignUp() {
-  const { register, handleSubmit } = useForm();
-
-  const apiRegister = "https://api.realworld.io/api/users";
-
-  const onSubmit = async (data: any) => {
-    const payload = {
-      user: data,
-    };
-
+  const { register, handleSubmit, formState: { errors } } = useForm();
+  const onSubmit = async (payload: any) => {
     try {
-      const response = await axios.post(apiRegister, payload, {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
+      const response = await httpClient.post('/users', {user: payload})
+      const token = response.data.user.token;
+      setItem(AUTH_TOKEN_KEY, token);
 
-      if (response.status !== 200) {
-        throw new Error("Ошибка при регистрации");
-      }
-
-      const responseData = response.data;
-      console.log(responseData);
+      // TODO!: made redirect to home page
     } catch (error) {
-      console.error(error);
+      const errors = parseErrorList(error);
+      console.log(errors);
     }
   };
 
@@ -48,15 +39,14 @@ export default function SignUp() {
             type="username"
             placeholder="Username"
             className="w-[540px] mb-[1rem] rounded-[0.3rem] border-[1px] px-[24px] py-[12px]"
-            {...register("username", { required: true })}
+            {...register("username", simpleControlValidator)}
           />
           <input
             id="email"
-            type="email"
             placeholder="Email"
             className="w-[540px] mb-[1rem] rounded-[0.3rem] border-[1px]
           px-[24px] py-[12px]"
-            {...register("email", { required: true })}
+            {...register("email", emailValidator)}
           />
           <input
             id="password"
@@ -64,7 +54,7 @@ export default function SignUp() {
             placeholder="Password"
             className="w-[540px] mb-[1rem] rounded-[0.3rem] border-[1px]
           px-[24px] py-[12px]"
-            {...register("password", { required: true })}
+            {...register("password", simpleControlValidator)}
           />
         </div>
 

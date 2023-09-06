@@ -1,42 +1,30 @@
 "use client";
 
-import axios from "axios";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import {httpClient} from "@/app/providers/http.provider";
+import {parseErrorList} from "@/app/helpers/error-list.helpers";
+import {emailValidator, simpleControlValidator} from "@/app/constants/validator.constants";
+import Error from "@/app/components/error-message/error-message";
 
 export default function SignIn() {
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors  },
   } = useForm();
 
   const [submitError, setSubmitError] = useState("");
 
-  const apiLogit = "https://api.realworld.io/api/users/login";
-
-  const onSubmit = async (data: any) => {
-    const payload = {
-      user: data,
-    };
-
+  const onSubmit = async (payload: any) => {
     try {
-      const response = await axios.post(apiLogit, payload, {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
+      const response = await httpClient.post('/users/login', {user: payload})
+      // TODO!: set token to local storage,
+      // TODO!: you can get token from response
 
-      if (response.status !== 200) {
-        throw new Error("Ошибка при регистрации");
-      }
-
-      const responseData = response.data;
-      console.log("Успешная регистрация:", responseData);
-      setSubmitError("");
-    } catch (error) {
-      console.error("Произошла ошибка:", error);
-      setSubmitError("email or password is invalid");
+      // TODO!: made redirect to home page
+    } catch (error: any) {
+      const errors = parseErrorList(error)
     }
   };
 
@@ -58,20 +46,21 @@ export default function SignIn() {
 
           <input
             className="w-[540px] mb-[1rem] rounded-[0.3rem] border-[1px] px-[24px] py-[12px]"
-            type="email"
             placeholder="Email"
-            {...register("email", { required: true })}
+            {...register("email", emailValidator)}
           />
+          <Error errors={errors} field={'email'} />
 
           <input
             className="w-[540px] mb-[1rem] rounded-[0.3rem] border-[1px] px-[24px] py-[12px]"
             type="password"
             placeholder="Password"
-            {...register("password", { required: true })}
+            {...register("password", simpleControlValidator)}
           />
+          <Error errors={errors} field={'password'} />
         </div>
 
-        <button className="float-right px-6 py-3 bg-primary hover:bg-primaryHover text-white rounded-[0.3rem]">
+        <button type="submit" className="float-right px-6 py-3 bg-primary hover:bg-primaryHover text-white rounded-[0.3rem]">
           Sign in
         </button>
       </div>
