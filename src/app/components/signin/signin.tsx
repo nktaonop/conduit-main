@@ -1,5 +1,6 @@
 "use client";
 
+import axios from "axios";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 
@@ -20,19 +21,17 @@ export default function SignIn() {
     };
 
     try {
-      const response = await fetch(apiLogit, {
-        method: "POST",
+      const response = await axios.post(apiLogit, payload, {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(payload),
       });
 
-      if (!response.ok) {
+      if (response.status !== 200) {
         throw new Error("Ошибка при регистрации");
       }
 
-      const responseData = await response.json();
+      const responseData = response.data;
       console.log("Успешная регистрация:", responseData);
       setSubmitError("");
     } catch (error) {
@@ -53,7 +52,7 @@ export default function SignIn() {
         </a>
 
         <div className="flex flex-col">
-          <ul className="list-disc mb-[1rem] pl-[40px]">
+          <ul className="mb-[1rem] pl-[40px]">
             {errors && <li className="text-error font-bold">{submitError}</li>}
           </ul>
 

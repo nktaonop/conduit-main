@@ -1,5 +1,6 @@
 "use client";
 
+import axios from "axios";
 import { useForm } from "react-hook-form";
 
 export default function SignUp() {
@@ -13,20 +14,18 @@ export default function SignUp() {
     };
 
     try {
-      const response = await fetch(apiRegister, {
-        method: "POST",
+      const response = await axios.post(apiRegister, payload, {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(payload),
       });
 
-      if (!response.ok) {
+      if (response.status !== 200) {
         throw new Error("Ошибка при регистрации");
       }
 
-      const data = await response.json();
-      console.log(data);
+      const responseData = response.data;
+      console.log(responseData);
     } catch (error) {
       console.error(error);
     }

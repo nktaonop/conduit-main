@@ -29,7 +29,8 @@
     "**/*.tsx",
     ".next/types/**/*.ts",
     "src/app/components/signup/signup.tsx",
-    "src/app/components/signin/signin.tsx"
+    "src/app/components/signin/signin.tsx",
+    "src/app/components/main/main.jsx"
   ],
   "exclude": ["node_modules"]
 }
