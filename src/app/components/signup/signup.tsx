@@ -1,21 +1,33 @@
 "use client";
 
 import { useForm } from "react-hook-form";
-import {httpClient} from "@/app/providers/http.provider";
-import {parseErrorList} from "@/app/helpers/error-list.helpers";
-import {setItem} from "@/app/helpers/storage.helpers";
-import {AUTH_TOKEN_KEY} from "@/app/constants/common.constants";
-import {emailValidator, simpleControlValidator} from "@/app/constants/validator.constants";
+import { httpClient } from "@/app/providers/http.provider";
+import { parseErrorList } from "@/app/helpers/error-list.helpers";
+import { setItem } from "@/app/helpers/storage.helpers";
+import { AUTH_TOKEN_KEY } from "@/app/constants/common.constants";
+import {
+  emailValidator,
+  simpleControlValidator,
+} from "@/app/constants/validator.constants";
+import { useRouter } from "next/navigation";
 
 export default function SignUp() {
-  const { register, handleSubmit, formState: { errors } } = useForm();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
+
+  const router = useRouter();
+
   const onSubmit = async (payload: any) => {
     try {
-      const response = await httpClient.post('/users', {user: payload})
+      const response = await httpClient.post("/users", { user: payload });
       const token = response.data.user.token;
       setItem(AUTH_TOKEN_KEY, token);
 
       // TODO!: made redirect to home page
+      router.push("/");
     } catch (error) {
       const errors = parseErrorList(error);
       console.log(errors);
