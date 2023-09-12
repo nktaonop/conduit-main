@@ -29,10 +29,6 @@ export default function SignIn() {
       const response = await httpClient.post("/users/login", { user: payload });
       const token = response.data.user.token;
       setItem(AUTH_TOKEN_KEY, token);
-      // TODO!: set token to local storage,
-      // TODO!: you can get token from response
-
-      // TODO!: made redirect to home page
       router.push("/");
     } catch (error: any) {
       const errors = parseErrorList(error);

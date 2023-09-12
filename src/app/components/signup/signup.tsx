@@ -25,8 +25,6 @@ export default function SignUp() {
       const response = await httpClient.post("/users", { user: payload });
       const token = response.data.user.token;
       setItem(AUTH_TOKEN_KEY, token);
-
-      // TODO!: made redirect to home page
       router.push("/");
     } catch (error) {
       const errors = parseErrorList(error);

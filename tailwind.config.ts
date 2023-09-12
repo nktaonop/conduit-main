@@ -15,6 +15,8 @@ const config: Config = {
         unClicked: "rgba(0, 0, 0, 0.3)",
         clicked: "black",
         error: "#B85C5C",
+        tagsButton: "#818a91",
+        tagsButtonHover: "#373a3c",
       },
       backgroundImage: {
         "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
