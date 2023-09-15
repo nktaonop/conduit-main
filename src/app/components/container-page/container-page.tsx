@@ -1,4 +1,4 @@
-import PopularTags from "../popular-tags/populartags";
+import PopularTags from "../popular-tags/popular-tags";
 
 export default function ContainerPage() {
   return (
