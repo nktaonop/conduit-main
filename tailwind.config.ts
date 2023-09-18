@@ -17,6 +17,9 @@ const config: Config = {
         error: "#B85C5C",
         tagsButton: "#818a91",
         tagsButtonHover: "#373a3c",
+        backgroundPopularTags: "#f3f3f3",
+        dataColor: "#bbb",
+        previewColor: "#999",
       },
       backgroundImage: {
         "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",

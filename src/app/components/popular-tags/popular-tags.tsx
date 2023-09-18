@@ -1,70 +1,38 @@
+"use client";
 import { httpClient } from "@/app/providers/http.provider";
+import { useState, useEffect } from "react";
 
 export default function PopularTags() {
+  const [tags, setPopularTags] = useState([]);
+
   const getTags = async () => {
     try {
       const response = await httpClient.get("/tags");
-      console.log((response: any) => response.json());
+      setPopularTags(response.data.tags);
     } catch (err) {
       console.log(err);
     }
   };
 
-  return (
-    <div className="float-right max-w-[25%] mt-[1.5rem]">
-      <p className="mb-[0.2rem]">Popular Tags</p>
+  useEffect(() => {
+    getTags();
+  }, []);
 
+  return (
+    <div className="relative h-auto max-w-[25%] mt-[1.5rem] bg-backgroundPopularTags rounded-[4px] pt-[5px] pb-[10px] px-[10px]">
+      <p className="mb-[0.2rem]">Popular Tags</p>
       <div className="flex flex-wrap">
-        <a
-          href="#"
-          className="text-white text-[0.8rem] pt-[0.2rem] pb-[0.2rem] pr-[0.6rem] pl-[0.6rem] mr-[3px] mb-[0.2rem] rounded-[10rem] bg-tagsButton hover:bg-tagsButtonHover">
-          welcome
-        </a>
-        <a
-          href="#"
-          className="text-white text-[0.8rem] pt-[0.2rem] pb-[0.2rem] pr-[0.6rem] pl-[0.6rem] mr-[3px] mb-[0.2rem] rounded-[10rem] bg-tagsButton hover:bg-tagsButtonHover">
-          implementations
-        </a>
-        <a
-          href="#"
-          className="text-white text-[0.8rem] pt-[0.2rem] pb-[0.2rem] pr-[0.6rem] pl-[0.6rem] mr-[3px] mb-[0.2rem] rounded-[10rem] bg-tagsButton hover:bg-tagsButtonHover">
-          introduction
-        </a>
-        <a
-          href="#"
-          className="text-white text-[0.8rem] pt-[0.2rem] pb-[0.2rem] pr-[0.6rem] pl-[0.6rem] mr-[3px] mb-[0.2rem] rounded-[10rem] bg-tagsButton hover:bg-tagsButtonHover">
-          codebaseShow
-        </a>
-        <a
-          href="#"
-          className="text-white text-[0.8rem] pt-[0.2rem] pb-[0.2rem] pr-[0.6rem] pl-[0.6rem] mr-[3px] mb-[0.2rem] rounded-[10rem] bg-tagsButton hover:bg-tagsButtonHover">
-          ipsum
-        </a>
-        <a
-          href="#"
-          className="text-white text-[0.8rem] pt-[0.2rem] pb-[0.2rem] pr-[0.6rem] pl-[0.6rem] mr-[3px] mb-[0.2rem] rounded-[10rem] bg-tagsButton hover:bg-tagsButtonHover">
-          qui
-        </a>
-        <a
-          href="#"
-          className="text-white text-[0.8rem] pt-[0.2rem] pb-[0.2rem] pr-[0.6rem] pl-[0.6rem] mr-[3px] mb-[0.2rem] rounded-[10rem] bg-tagsButton hover:bg-tagsButtonHover">
-          cupiditate
-        </a>
-        <a
-          href="#"
-          className="text-white text-[0.8rem] pt-[0.2rem] pb-[0.2rem] pr-[0.6rem] pl-[0.6rem] mr-[3px] mb-[0.2rem] rounded-[10rem] bg-tagsButton hover:bg-tagsButtonHover">
-          et
-        </a>
-        <a
-          href="#"
-          className="text-white text-[0.8rem] pt-[0.2rem] pb-[0.2rem] pr-[0.6rem] pl-[0.6rem] mr-[3px] mb-[0.2rem] rounded-[10rem] bg-tagsButton hover:bg-tagsButtonHover">
-          quia
-        </a>
-        <a
-          href="#"
-          className="text-white text-[0.8rem] pt-[0.2rem] pb-[0.2rem] pr-[0.6rem] pl-[0.6rem] mr-[3px] mb-[0.2rem] rounded-[10rem] bg-tagsButton hover:bg-tagsButtonHover">
-          deserunt
-        </a>
+        {tags.length === 0 && "Popular tags is loading..."}
+        {tags.map((tag, index) => {
+          return (
+            <a
+              key={index}
+              href="#"
+              className="text-white text-[0.8rem] pt-[0.2rem] pb-[0.2rem] pr-[0.6rem] pl-[0.6rem] mr-[3px] mb-[0.2rem] rounded-[10rem] bg-tagsButton hover:bg-tagsButtonHover">
+              {tag}
+            </a>
+          );
+        })}
       </div>
     </div>
   );
