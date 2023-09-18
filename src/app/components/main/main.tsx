@@ -1,6 +1,6 @@
 export default function MainPage() {
   return (
-    <div className="bg-primary h-[170px] w-[100%] flex flex-col items-center justify-center shadow-lg">
+    <div className="bg-primary h-[170px] w-[100%] flex flex-col items-center justify-center">
       <h1 className="text-white text-[56px] font-bold drop-shadow-md">
         conduit
       </h1>
