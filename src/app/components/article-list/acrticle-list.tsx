@@ -2,14 +2,51 @@
 import { httpClient } from "@/app/providers/http.provider";
 import { useState, useEffect } from "react";
 import { Icon } from "@iconify/react";
+import Pagination from "../pagination/pagination";
 
 export default function ArticleList() {
   const [list, setArticleList] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [articlesPerPage] = useState(10);
+
+  const onPageChange = (pageNumber: any) => {
+    setCurrentPage(pageNumber);
+  };
+
+  const toggleLike = async (article: any) => {
+    try {
+      const isFavorited = article.favorited;
+
+      if (isFavorited) {
+        await httpClient.delete(`/articles/${article.slug}/favorite`);
+      } else {
+        await httpClient.post(`/articles/${article.slug}/favorite`);
+      }
+
+      const updatedList = list.map((item: any) =>
+        item.slug === article.slug
+          ? {
+              ...item,
+              favorited: !isFavorited,
+              favoritesCount: isFavorited
+                ? item.favoritesCount - 1
+                : item.favoritesCount + 1,
+            }
+          : item
+      );
+      setArticleList(updatedList);
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
   const getList = async () => {
     try {
+      setLoading(true);
       const response = await httpClient.get("/articles");
       setArticleList(response.data.articles);
+      setLoading(false);
     } catch (err) {
       console.error(err);
     }
@@ -29,7 +66,7 @@ export default function ArticleList() {
           <div className="flex justify-between mb-[1rem]">
             <div className="flex">
               <img
-                className="rounded-full"
+                className="rounded-full h-[32px]"
                 src={article.author.image}
                 alt={article.author.username}
               />
@@ -42,12 +79,23 @@ export default function ArticleList() {
                 </span>
               </div>
             </div>
-            <button className="flex items-center h-[100%] px-[0.5rem] py-[0.25rem] text-[0.875rem] border-[1px] rounded-[0.2rem] border-primary hover:text-white relative group hover:bg-primary">
+            <button
+              onClick={() => toggleLike(article)}
+              className={`flex items-center h-[100%] px-[0.5rem] py-[0.25rem] text-[0.875rem] border-[1px] rounded-[0.2rem] ${
+                article.favorited
+                  ? "bg-primary text-white"
+                  : "border-primary text-primary"
+              } relative group hover:bg-primary`}>
               <Icon
                 icon="ion:heart"
-                className="text-primary group-hover:text-white"
+                className={`text-${
+                  article.favorited ? "white" : "primary"
+                } group-hover:text-white`}
               />
-              <span className="text-primary group-hover:text-white">
+              <span
+                className={`text-${
+                  article.favorited ? "white" : "primary"
+                } group-hover:text-white`}>
                 {article.favoritesCount}
               </span>
             </button>
@@ -74,6 +122,12 @@ export default function ArticleList() {
           </a>
         </div>
       ))}
+      <Pagination
+        articlesPerPage={articlesPerPage}
+        totalArticles={list.length}
+        currentPage={currentPage}
+        onPageChange={onPageChange}
+      />
     </div>
   );
 }

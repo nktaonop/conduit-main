@@ -19,7 +19,7 @@ export default function PopularTags() {
   }, []);
 
   return (
-    <div className="relative h-auto max-w-[25%] mt-[1.5rem] bg-backgroundPopularTags rounded-[4px] pt-[5px] pb-[10px] px-[10px]">
+    <div className="relative h-[100%] max-w-[25%] mt-[1.5rem] bg-backgroundPopularTags rounded-[4px] pt-[5px] pb-[10px] px-[10px]">
       <p className="mb-[0.2rem]">Popular Tags</p>
       <div className="flex flex-wrap">
         {tags.length === 0 && "Popular tags is loading..."}
