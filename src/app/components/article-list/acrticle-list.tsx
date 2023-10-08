@@ -9,9 +9,12 @@ export default function ArticleList() {
   const [loading, setLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [articlesPerPage] = useState(10);
+  const [totalArticles, setTotalArticles] = useState(10);
+  const [offset, setOffset] = useState(0);
 
-  const onPageChange = (pageNumber: any) => {
+  const onPageChange = (pageNumber: number) => {
     setCurrentPage(pageNumber);
+    setOffset((pageNumber - 1) * articlesPerPage);
   };
 
   const toggleLike = async (article: any) => {
@@ -44,8 +47,11 @@ export default function ArticleList() {
   const getList = async () => {
     try {
       setLoading(true);
-      const response = await httpClient.get("/articles");
+      const response = await httpClient.get(
+        `/articles?limit=${articlesPerPage}&offset=${offset}`
+      );
       setArticleList(response.data.articles);
+      setTotalArticles(response.data.articlesCount);
       setLoading(false);
     } catch (err) {
       console.error(err);
@@ -54,7 +60,7 @@ export default function ArticleList() {
 
   useEffect(() => {
     getList();
-  }, []);
+  }, [currentPage, offset]);
 
   return (
     <div className="relative max-w-[75%] px-[15px]">
@@ -124,7 +130,7 @@ export default function ArticleList() {
       ))}
       <Pagination
         articlesPerPage={articlesPerPage}
-        totalArticles={list.length}
+        totalArticles={totalArticles}
         currentPage={currentPage}
         onPageChange={onPageChange}
       />

@@ -20,6 +20,8 @@ const config: Config = {
         backgroundPopularTags: "#f3f3f3",
         dataColor: "#bbb",
         previewColor: "#999",
+        paginationBorder: "#ddd",
+        paginationHover: "#eceeef",
       },
       backgroundImage: {
         "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
