@@ -3,7 +3,7 @@ import { httpClient } from "@/app/providers/http.provider";
 import { useState, useEffect } from "react";
 
 export default function PopularTags() {
-  const [tags, setPopularTags] = useState([]);
+  const [tags, setPopularTags] = useState<string[]>([]);
 
   const getTags = async () => {
     try {
