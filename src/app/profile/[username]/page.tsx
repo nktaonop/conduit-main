@@ -5,12 +5,19 @@ import { httpClient } from "@/app/providers/http.provider";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import { useState, useEffect } from "react";
 
+enum ActiveTabType {
+  MY_ARTICLES = 1,
+  FAVORITED_ARTICLES = 2
+}
+
+const ARTICLES_PER_PAGE = 5;
+
 export default function UserProfile({
   params,
 }: {
   params: { username: string };
 }) {
-  const [activeButton, setActiveButton] = useState(1);
+  const [activeButton, setActiveButton] = useState<ActiveTabType>(ActiveTabType.MY_ARTICLES);
   const [authorProfile, setAuthorProfile] = useState();
   const [authorArticle, setAuthorArticle] = useState<ArticleInterface[]>([]);
   const [favoritedArticles, setFavoritedArticles] = useState<
@@ -18,10 +25,10 @@ export default function UserProfile({
   >([]);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [currentPageFavorited, setCurrentPageFavorited] = useState<number>(1);
-  const [articlesPerPage] = useState(5);
   const [totalArticles, setTotalArticles] = useState(5);
   const [totalArticlesFavorited, setTotalArticlesFavorited] = useState(5);
   const [offset, setOffset] = useState(0);
+  const [favoritedOffset, setFavoritedOffset] = useState(0);
 
   const handelButtonClick = (event: number) => {
     setActiveButton(event);
@@ -45,7 +52,7 @@ export default function UserProfile({
   const getAuthorArticles = async () => {
     try {
       const { data: response } = await httpClient.get(
-        `/articles?author=${params.username}&limit=${articlesPerPage}&offset=${offset}`
+        `/articles?author=${params.username}&limit=${ARTICLES_PER_PAGE}&offset=${offset}`
       );
       setAuthorArticle(response.articles);
       setTotalArticles(response.articlesCount);
@@ -54,18 +61,14 @@ export default function UserProfile({
     }
   };
 
-  useEffect(() => {
-    getAuthorArticles();
-  }, [currentPage, offset]);
-
   const onPageChange = (pageNumber: number) => {
     setCurrentPage(pageNumber);
-    setOffset((pageNumber - 1) * articlesPerPage);
+    setOffset((pageNumber - 1) * ARTICLES_PER_PAGE);
   };
 
   const onPageChangeFavorited = (pageNumber: number) => {
     setCurrentPageFavorited(pageNumber);
-    setOffset((pageNumber - 1) * articlesPerPage);
+    setFavoritedOffset((pageNumber - 1) * ARTICLES_PER_PAGE);
   };
 
   const toggleLike = async (article: ArticleInterface) => {
@@ -98,9 +101,9 @@ export default function UserProfile({
   const getFavoritedArticles = async () => {
     try {
       const { data: response } = await httpClient.get(
-        `/articles?favorited=${params.username}&limit=${articlesPerPage}&offset=${offset}`
+        `/articles?favorited=${params.username}&limit=${ARTICLES_PER_PAGE}&offset=${favoritedOffset}`
       );
-      setFavoritedArticles(response.articles);
+      setFavoritedArticles(response.articles)
       setTotalArticlesFavorited(response.articlesCount);
     } catch (err) {
       console.log(err);
@@ -109,7 +112,16 @@ export default function UserProfile({
 
   useEffect(() => {
     getFavoritedArticles();
+    getAuthorArticles();
   }, [activeButton]);
+
+  useEffect(() => {
+    void getAuthorArticles();
+  }, [offset])
+
+  useEffect(() => {
+    void getFavoritedArticles();
+  }, [favoritedOffset])
 
   return (
     <>
@@ -129,23 +141,23 @@ export default function UserProfile({
         </div>
         <div className="flex max-w-[920px] m-auto">
           <button
-            onClick={() => handelButtonClick(1)}
+            onClick={() => handelButtonClick(ActiveTabType.MY_ARTICLES)}
             className={`py-[8px] px-[16px] ${
-              activeButton === 1 ? "text-primary border-b-2 border-primary" : ""
+              activeButton === ActiveTabType.MY_ARTICLES ? "text-primary border-b-2 border-primary" : ""
             }`}>
             My Articles
           </button>
           <button
-            onClick={() => handelButtonClick(2)}
+            onClick={() => handelButtonClick(ActiveTabType.FAVORITED_ARTICLES)}
             className={`py-[8px] px-[16px] ${
-              activeButton === 2 ? "text-primary border-b-2 border-primary" : ""
+              activeButton === ActiveTabType.FAVORITED_ARTICLES ? "text-primary border-b-2 border-primary" : ""
             }`}>
             Favorited Articles
           </button>
         </div>
       </div>
       <div className="relative max-w-[920px] px-[15px] m-auto">
-        {activeButton === 1
+        {activeButton === ActiveTabType.MY_ARTICLES
           ? authorArticle.map((article, index) => (
               <div
                 className="py-[1.5rem] border-t border-solid border-gray-300"
@@ -272,19 +284,19 @@ export default function UserProfile({
                 </a>
               </div>
             ))}
-        {totalArticles >= 6 && (
+        {totalArticles >= 6 && activeButton === ActiveTabType.MY_ARTICLES && (
           <Pagination
-            articlesPerPage={articlesPerPage}
             totalArticles={totalArticles}
             currentPage={currentPage}
+            articlesPerPage={ARTICLES_PER_PAGE}
             onPageChange={onPageChange}
           />
         )}
-        {totalArticlesFavorited >= 6 && (
+        {totalArticlesFavorited >= 6 && activeButton === ActiveTabType.FAVORITED_ARTICLES && (
           <Pagination
-            articlesPerPage={articlesPerPage}
             totalArticles={totalArticlesFavorited}
             currentPage={currentPageFavorited}
+            articlesPerPage={ARTICLES_PER_PAGE}
             onPageChange={onPageChangeFavorited}
           />
         )}

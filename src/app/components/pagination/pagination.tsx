@@ -1,14 +1,14 @@
 "use client";
 
 type PaginationProps = {
-  articlesPerPage: number;
+  articlesPerPage?: number;
   totalArticles: number;
   currentPage: number;
   onPageChange: (pageNumber: number) => void;
 };
 
 export default function Pagination({
-  articlesPerPage,
+  articlesPerPage = 5,
   totalArticles,
   currentPage,
   onPageChange,
