@@ -17,6 +17,11 @@ export default function Pagination({
     (_, index) => ++index
   );
 
+  const handleClick = (e: React.MouseEvent, pageNumber: number) => {
+    e.preventDefault();
+    onPageChange(pageNumber);
+  };
+
   return (
     <div>
       <ul>
@@ -35,7 +40,7 @@ export default function Pagination({
                   : ""
               }`}
               href="#"
-              onClick={() => onPageChange(number)}>
+              onClick={(e) => handleClick(e, number)}>
               {number}
             </a>
           </li>

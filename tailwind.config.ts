@@ -22,6 +22,9 @@ const config: Config = {
         previewColor: "#999",
         paginationBorder: "#ddd",
         paginationHover: "#eceeef",
+        logoutButton: "#B85C5C",
+        inputColor: "#55595c",
+        activeButtonColor: "#aaaaaa",
       },
       backgroundImage: {
         "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",

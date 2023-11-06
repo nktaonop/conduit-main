@@ -10,17 +10,18 @@ import {
   simpleControlValidator,
 } from "@/app/constants/validator.constants";
 import { useRouter } from "next/navigation";
+import { UserPayloadInterface } from "../interfaces/user.interface";
 
 export default function SignUp() {
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm();
+  } = useForm<UserPayloadInterface>();
 
   const router = useRouter();
 
-  const onSubmit = async (payload: any) => {
+  const onSubmit = async (payload: UserPayloadInterface) => {
     try {
       const response = await httpClient.post("/users", { user: payload });
       const token = response.data.user.token;
