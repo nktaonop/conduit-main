@@ -3,9 +3,11 @@ import { httpClient } from "@/app/providers/http.provider";
 import { useState, useEffect } from "react";
 import { Icon } from "@iconify/react";
 import Pagination from "../pagination/pagination";
+import { ArticleInterface } from "@/app/components/interfaces/article-list.interface";
+import Link from "next/link";
 
 export default function ArticleList() {
-  const [list, setArticleList] = useState([]);
+  const [list, setArticleList] = useState<ArticleInterface[]>([]);
   const [loading, setLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [articlesPerPage] = useState(10);
@@ -17,7 +19,7 @@ export default function ArticleList() {
     setOffset((pageNumber - 1) * articlesPerPage);
   };
 
-  const toggleLike = async (article: any) => {
+  const toggleLike = async (article: ArticleInterface) => {
     try {
       const isFavorited = article.favorited;
 
@@ -27,7 +29,7 @@ export default function ArticleList() {
         await httpClient.post(`/articles/${article.slug}/favorite`);
       }
 
-      const updatedList = list.map((item: any) =>
+      const updatedList = list.map((item: ArticleInterface) =>
         item.slug === article.slug
           ? {
               ...item,
@@ -64,7 +66,7 @@ export default function ArticleList() {
 
   return (
     <div className="relative max-w-[75%] px-[15px]">
-      {list.length === 0 && "Loading articles..."}
+      {list.length === 0 && !loading && "Loading articles..."}
       {list.map((article, index) => (
         <div
           className="py-[1.5rem] border-t border-solid border-gray-300"
@@ -77,7 +79,7 @@ export default function ArticleList() {
                 alt={article.author.username}
               />
               <div className="flex flex-col ml-[0.3rem] mr-[1.5rem]">
-                <a className="text-primary font-medium" href="#">
+                <a className="text-primary font-medium">
                   {article.author.username}
                 </a>
                 <span className="text-dataColor text-[0.8rem]">
@@ -106,7 +108,7 @@ export default function ArticleList() {
               </span>
             </button>
           </div>
-          <a>
+          <Link href={`/article-detail/${article.slug}`}>
             <h1 className="font-semibold text-[1.5rem] mb-[3px]">
               {article.title}
             </h1>
@@ -125,9 +127,10 @@ export default function ArticleList() {
                 </li>
               ))}
             </ul>
-          </a>
+          </Link>
         </div>
       ))}
+      {loading && "Loading articles..."}
       <Pagination
         articlesPerPage={articlesPerPage}
         totalArticles={totalArticles}

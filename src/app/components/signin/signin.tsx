@@ -12,25 +12,26 @@ import Error from "@/app/components/error-message/error-message";
 import { setItem } from "@/app/helpers/storage.helpers";
 import { AUTH_TOKEN_KEY } from "@/app/constants/common.constants";
 import { useRouter } from "next/navigation";
+import { UserPayloadInterface } from "../interfaces/user.interface";
 
 export default function SignIn() {
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm();
+  } = useForm<UserPayloadInterface>();
 
   const [submitError, setSubmitError] = useState("");
 
   const router = useRouter();
 
-  const onSubmit = async (payload: any) => {
+  const onSubmit = async (payload: UserPayloadInterface) => {
     try {
       const response = await httpClient.post("/users/login", { user: payload });
       const token = response.data.user.token;
       setItem(AUTH_TOKEN_KEY, token);
       router.push("/");
-    } catch (error: any) {
+    } catch (error: unknown) {
       const errors = parseErrorList(error);
     }
   };

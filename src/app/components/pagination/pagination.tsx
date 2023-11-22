@@ -1,14 +1,14 @@
 "use client";
 
 type PaginationProps = {
-  articlesPerPage: number;
+  articlesPerPage?: number;
   totalArticles: number;
   currentPage: number;
   onPageChange: (pageNumber: number) => void;
 };
 
 export default function Pagination({
-  articlesPerPage,
+  articlesPerPage = 5,
   totalArticles,
   currentPage,
   onPageChange,
@@ -16,6 +16,11 @@ export default function Pagination({
   const pages = [...new Array(Math.ceil(totalArticles / articlesPerPage))].map(
     (_, index) => ++index
   );
+
+  const handleClick = (e: React.MouseEvent, pageNumber: number) => {
+    e.preventDefault();
+    onPageChange(pageNumber);
+  };
 
   return (
     <div>
@@ -35,7 +40,7 @@ export default function Pagination({
                   : ""
               }`}
               href="#"
-              onClick={() => onPageChange(number)}>
+              onClick={(e) => handleClick(e, number)}>
               {number}
             </a>
           </li>
