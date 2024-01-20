@@ -63,7 +63,11 @@ export default function Header() {
                 {l.label}
               </Link>
             ))}
-            <Link className={`mr-4 link`} href={`/profile/${user.username}`}>
+            <Link
+              className={`mr-4 link ${
+                activeSegment === "profile" ? "text-clicked" : "text-unClicked"
+              }`}
+              href={`/profile/${user.username}`}>
               {user.username}
             </Link>
           </div>

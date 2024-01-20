@@ -3,13 +3,19 @@
 import { useForm } from "react-hook-form";
 import { NewArticlesInterface } from "../interfaces/article-list.interface";
 import { httpClient } from "@/app/providers/http.provider";
+import { useRouter } from "next/navigation";
 
 export default function NewArticle() {
   const { register, handleSubmit } = useForm<NewArticlesInterface>();
 
+  const router = useRouter();
+
   const onSubmit = async (data: NewArticlesInterface) => {
     try {
-      await httpClient.post("/articles", { article: data });
+      const {
+        data: { article },
+      } = await httpClient.post("/articles", { article: data });
+      router.push(`/article-detail/${article.slug}/${article.author.username}`);
     } catch (err) {
       console.log(err);
     }

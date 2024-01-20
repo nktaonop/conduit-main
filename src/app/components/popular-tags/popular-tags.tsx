@@ -1,14 +1,16 @@
 "use client";
+import { useTagsContext } from "@/app/context/TagsContext";
 import { httpClient } from "@/app/providers/http.provider";
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 
 export default function PopularTags() {
-  const [tags, setPopularTags] = useState([]);
+  const [tags, setTags] = useState([]);
+  const { selectTag } = useTagsContext();
 
   const getTags = async () => {
     try {
       const response = await httpClient.get("/tags");
-      setPopularTags(response.data.tags);
+      setTags(response.data.tags);
     } catch (err) {
       console.log(err);
     }
@@ -25,12 +27,12 @@ export default function PopularTags() {
         {tags.length === 0 && "Popular tags is loading..."}
         {tags.map((tag, index) => {
           return (
-            <a
+            <button
               key={index}
-              href="#"
+              onClick={() => selectTag(tag)}
               className="text-white text-[0.8rem] pt-[0.2rem] pb-[0.2rem] pr-[0.6rem] pl-[0.6rem] mr-[3px] mb-[0.2rem] rounded-[10rem] bg-tagsButton hover:bg-tagsButtonHover">
               {tag}
-            </a>
+            </button>
           );
         })}
       </div>

@@ -31,7 +31,9 @@
     "src/app/components/signup/signup.tsx",
     "src/app/components/signin/signin.tsx",
     "src/app/components/main/main.jsx",
-    "src/app/components/article-list/acrticle-list.tsx"
+    "src/app/components/article-list/acrticle-list.tsx",
+    "src/app/context/TagsContext.jsx",
+    "src/app/components/popular-tags/popular-tags.jsx"
   ],
   "exclude": ["node_modules"]
 }

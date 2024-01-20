@@ -25,6 +25,8 @@ const config: Config = {
         logoutButton: "#B85C5C",
         inputColor: "#55595c",
         activeButtonColor: "#aaaaaa",
+        backgroundArticle: "#333",
+        followButton: "#ccc",
       },
       backgroundImage: {
         "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",

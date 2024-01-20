@@ -3,21 +3,25 @@ import { ArticleInterface } from "@/app/components/interfaces/article-list.inter
 import Pagination from "@/app/components/pagination/pagination";
 import { httpClient } from "@/app/providers/http.provider";
 import { Icon } from "@iconify/react/dist/iconify.js";
+import Link from "next/link";
 import { useState, useEffect } from "react";
 
 enum ActiveTabType {
   MY_ARTICLES = 1,
-  FAVORITED_ARTICLES = 2
+  FAVORITED_ARTICLES = 2,
 }
 
 const ARTICLES_PER_PAGE = 5;
+``;
 
 export default function UserProfile({
   params,
 }: {
   params: { username: string };
 }) {
-  const [activeButton, setActiveButton] = useState<ActiveTabType>(ActiveTabType.MY_ARTICLES);
+  const [activeButton, setActiveButton] = useState<ActiveTabType>(
+    ActiveTabType.MY_ARTICLES
+  );
   const [authorProfile, setAuthorProfile] = useState();
   const [authorArticle, setAuthorArticle] = useState<ArticleInterface[]>([]);
   const [favoritedArticles, setFavoritedArticles] = useState<
@@ -103,7 +107,7 @@ export default function UserProfile({
       const { data: response } = await httpClient.get(
         `/articles?favorited=${params.username}&limit=${ARTICLES_PER_PAGE}&offset=${favoritedOffset}`
       );
-      setFavoritedArticles(response.articles)
+      setFavoritedArticles(response.articles);
       setTotalArticlesFavorited(response.articlesCount);
     } catch (err) {
       console.log(err);
@@ -117,11 +121,11 @@ export default function UserProfile({
 
   useEffect(() => {
     void getAuthorArticles();
-  }, [offset])
+  }, [offset]);
 
   useEffect(() => {
     void getFavoritedArticles();
-  }, [favoritedOffset])
+  }, [favoritedOffset]);
 
   return (
     <>
@@ -143,14 +147,18 @@ export default function UserProfile({
           <button
             onClick={() => handelButtonClick(ActiveTabType.MY_ARTICLES)}
             className={`py-[8px] px-[16px] ${
-              activeButton === ActiveTabType.MY_ARTICLES ? "text-primary border-b-2 border-primary" : ""
+              activeButton === ActiveTabType.MY_ARTICLES
+                ? "text-primary border-b-2 border-primary"
+                : ""
             }`}>
             My Articles
           </button>
           <button
             onClick={() => handelButtonClick(ActiveTabType.FAVORITED_ARTICLES)}
             className={`py-[8px] px-[16px] ${
-              activeButton === ActiveTabType.FAVORITED_ARTICLES ? "text-primary border-b-2 border-primary" : ""
+              activeButton === ActiveTabType.FAVORITED_ARTICLES
+                ? "text-primary border-b-2 border-primary"
+                : ""
             }`}>
             Favorited Articles
           </button>
@@ -199,7 +207,8 @@ export default function UserProfile({
                     </span>
                   </button>
                 </div>
-                <a href={`/article/${article.slug}`}>
+                <Link
+                  href={`/article-detail/${article.slug}/${params.username}`}>
                   <h1 className="font-semibold text-[1.5rem] mb-[3px]">
                     {article.title}
                   </h1>
@@ -218,7 +227,7 @@ export default function UserProfile({
                       </li>
                     ))}
                   </ul>
-                </a>
+                </Link>
               </div>
             ))
           : favoritedArticles.map((article, index) => (
@@ -262,7 +271,8 @@ export default function UserProfile({
                     </span>
                   </button>
                 </div>
-                <a href={`/article/${article.slug}`}>
+                <Link
+                  href={`/article-detail/${article.slug}/${params.username}`}>
                   <h1 className="font-semibold text-[1.5rem] mb-[3px]">
                     {article.title}
                   </h1>
@@ -281,7 +291,7 @@ export default function UserProfile({
                       </li>
                     ))}
                   </ul>
-                </a>
+                </Link>
               </div>
             ))}
         {totalArticles >= 6 && activeButton === ActiveTabType.MY_ARTICLES && (
@@ -292,14 +302,15 @@ export default function UserProfile({
             onPageChange={onPageChange}
           />
         )}
-        {totalArticlesFavorited >= 6 && activeButton === ActiveTabType.FAVORITED_ARTICLES && (
-          <Pagination
-            totalArticles={totalArticlesFavorited}
-            currentPage={currentPageFavorited}
-            articlesPerPage={ARTICLES_PER_PAGE}
-            onPageChange={onPageChangeFavorited}
-          />
-        )}
+        {totalArticlesFavorited >= 6 &&
+          activeButton === ActiveTabType.FAVORITED_ARTICLES && (
+            <Pagination
+              totalArticles={totalArticlesFavorited}
+              currentPage={currentPageFavorited}
+              articlesPerPage={ARTICLES_PER_PAGE}
+              onPageChange={onPageChangeFavorited}
+            />
+          )}
       </div>
     </>
   );

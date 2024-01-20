@@ -1,12 +1,14 @@
 "use client";
 import { httpClient } from "@/app/providers/http.provider";
-import { useState, useEffect } from "react";
+import { useContext, useState, useEffect } from "react";
 import { Icon } from "@iconify/react";
 import Pagination from "../pagination/pagination";
 import { ArticleInterface } from "@/app/components/interfaces/article-list.interface";
 import Link from "next/link";
+import { useTagsContext } from "@/app/context/TagsContext";
 
 export default function ArticleList() {
+  const { selectedTag } = useTagsContext();
   const [list, setArticleList] = useState<ArticleInterface[]>([]);
   const [loading, setLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState<number>(1);
@@ -40,6 +42,7 @@ export default function ArticleList() {
             }
           : item
       );
+      console.log(list);
       setArticleList(updatedList);
     } catch (err) {
       console.error(err);
@@ -64,13 +67,29 @@ export default function ArticleList() {
     getList();
   }, [currentPage, offset]);
 
+  const getListOfTag = async () => {
+    try {
+      setLoading(true);
+      const response = await httpClient.get(
+        `/articles?limit=${articlesPerPage}&offset=${offset}&tag=${selectedTag}`
+      );
+      setArticleList(response.data.articles);
+      setTotalArticles(response.data.articlesCount);
+      setLoading(false);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  useEffect(() => {
+    getListOfTag();
+  }, [selectedTag, currentPage, offset]);
+
   return (
     <div className="relative max-w-[75%] px-[15px]">
       {list.length === 0 && !loading && "Loading articles..."}
       {list.map((article, index) => (
-        <div
-          className="py-[1.5rem] border-t border-solid border-gray-300"
-          key={index}>
+        <div className="py-[1.5rem] w-[825px]" key={index}>
           <div className="flex justify-between mb-[1rem]">
             <div className="flex">
               <img
